@@ -1,35 +1,65 @@
-import { useState } from 'react'
-import './App.css'
-
-function ProductCard(props) {
-  console.log(props);
-  const product = props.product;
-  return (
-    <div className='product-card'>
-      <img src={product.imgUrl} alt={product.title} />
-      <p>product {product.title}</p>
-      <p>price {product.price} SEK</p>
-      <p>description {product.description}</p>
-    </div>
-  )
-}
+import { useState, useEffect } from 'react'
+import MovieList from './components/MovieList'
+import ShowList from './components/ShowList'
+import BookingForm from './components/BookingForm'
+import BookingConfirmation from './components/BookingConfirmation'
 
 function App() {
+  const [movies, setMovies] = useState([])
+  const [selectedMovie, setSelectedMovie] = useState(null)
+  const [shows, setShows] = useState([])
+  const [selectedShow, setSelectedShow] = useState(null)
+  const [bookings, setBookings] = useState([])
+  const [currentView, setCurrentView] = useState('movies')
+  const [bookingDetails, setBookingDetails] = useState(null)
 
-const products = [
-  {title: 'Catch me if you can', imgUrl: "https://placehold.co/200x100", price: 150, description: 'drama, thriller, romans'},
-  {title: 'Gladiator', imgUrl: "https://placehold.co/200x100", price: 160, description: 'drama, action, romans'},
-  {title: 'Starwars', imgUrl: "https://placehold.co/200x100", price: 170, description: 'action, sci-fi, fantasy'}
-]
+  // API calls
+  const loadMovies = async () => {
+    // Hämta filmer från API
+  }
+
+  const loadShows = async (movieId) => {
+    // Hämta föreställningar för vald film
+  }
+
+  const bookTicket = async (showId, seatNumber, email) => {
+    // Boka biljett
+  }
+
   return (
-    <>
-      <h1>Hej!</h1>
-     {/* <ProductCard product={product}/>
-     <ProductCard product={product2}/>
-     <ProductCard product={product3}/> */}
-
-     {products.map( product => <ProductCard product={product} />) }
-    </>
+    <div>
+      {currentView === 'movies' && (
+        <MovieList 
+          movies={movies} 
+          onMovieSelect={setSelectedMovie}
+          onNextView={() => setCurrentView('shows')}
+        />
+      )}
+      
+      {currentView === 'shows' && selectedMovie && (
+        <ShowList 
+          movie={selectedMovie}
+          shows={shows}
+          onShowSelect={setSelectedShow}
+          onNextView={() => setCurrentView('booking')}
+        />
+      )}
+      
+      {currentView === 'booking' && selectedShow && (
+        <BookingForm 
+          show={selectedShow}
+          onBookingComplete={setBookingDetails}
+          onNextView={() => setCurrentView('confirmation')}
+        />
+      )}
+      
+      {currentView === 'confirmation' && bookingDetails && (
+        <BookingConfirmation 
+          booking={bookingDetails}
+          onBackToMovies={() => setCurrentView('movies')}
+        />
+      )}
+    </div>
   )
 }
 
