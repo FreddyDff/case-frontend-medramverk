@@ -2,6 +2,9 @@ const API_BASE = 'https://cinema-api.henrybergstrom.com/api/v1'
 
 export const fetchMovies = async () => {
   const response = await fetch(`${API_BASE}/movies`)
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`)
+  }
   return response.json()
 }
 
@@ -12,6 +15,9 @@ export const fetchShows = async () => {
 
 export const fetchShowsByMovie = async (movieId) => {
   const response = await fetch(`${API_BASE}/shows/movie/${movieId}`)
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`)
+  }
   return response.json()
 }
 
@@ -31,12 +37,28 @@ export const fetchBooking = async (id) => {
 }
 
 export const createBooking = async (bookingData) => {
+  console.log('Sending booking data to API:', bookingData)
   const response = await fetch(`${API_BASE}/bookings`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    },
     body: JSON.stringify(bookingData)
   })
-  return response.json()
+  
+  console.log('API response status:', response.status)
+  console.log('API response headers:', response.headers)
+  
+  if (!response.ok) {
+    const errorText = await response.text()
+    console.error('API error response:', errorText)
+    throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`)
+  }
+  
+  const result = await response.json()
+  console.log('API response data:', result)
+  return result
 }
 
 export const updateBooking = async (id, bookingData) => {

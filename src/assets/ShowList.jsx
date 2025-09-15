@@ -1,4 +1,4 @@
-import ShowCard from '../ShowCard'
+import ShowCard from '../components/ShowCard'
 
 function ShowList({ shows, onShowSelect }) {
     return (

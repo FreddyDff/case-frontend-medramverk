@@ -10,8 +10,10 @@ function BookingConfirmation({ booking, onBackToMovies }) {
         <p><strong>Film:</strong> {booking.movieTitle}</p>
         <p><strong>Datum:</strong> {booking.date}</p>
         <p><strong>Tid:</strong> {booking.time}</p>
-        <p><strong>Plats:</strong> {booking.seatNumber}</p>
-        <p><strong>Pris:</strong> {booking.price} SEK</p>
+        <p><strong>Platser:</strong> {booking.seatNumbers?.join(', ') || booking.seats?.join(', ')}</p>
+        <p><strong>Antal biljetter:</strong> {booking.ticketCount || booking.seats?.length}</p>
+        <p><strong>Totalt pris:</strong> {booking.totalPrice} SEK</p>
+        {booking._id && <p><strong>Bokningsnummer:</strong> {booking._id}</p>}
         {booking.id && <p><strong>Bokningsnummer:</strong> {booking.id}</p>}
       </div>
       <div>
