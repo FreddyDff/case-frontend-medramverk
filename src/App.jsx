@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
-import MovieList from './components/MovieList'
-import ShowList from './components/ShowList'
-import BookingForm from './components/BookingForm'
-import BookingConfirmation from './components/BookingConfirmation'
+import MovieList from './MovieList'
+import ShowList from './assets/ShowList'
+import BookingForm from './BookingForm'
+import BookingConfirmation from './BookingConfirmation'
 
 function App() {
   const [movies, setMovies] = useState([])
