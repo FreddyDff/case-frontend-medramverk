@@ -53,7 +53,7 @@ function HomePage() {
   return (
     <div>
       <header className="app-header">
-        <h1 className="app-title">🎬 Cinema Booking</h1>
+        <h1 className="app-title">🎬 Cinema Malmö</h1>
       </header>
       
       <div className="app-container">

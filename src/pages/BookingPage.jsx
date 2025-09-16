@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { fetchMovies, fetchShowsByMovie, createBooking } from '../api'
-
+// 
 function BookingPage() {
   const { movieId } = useParams()
   const navigate = useNavigate()
@@ -120,17 +120,17 @@ function BookingPage() {
       console.log('Falling back to mock data...')
       
       // Fallback till mock-data om API:et inte fungerar
-      const mockMovies = [
-        { id: 1, title: 'Catch me if you can', posterUrl: 'https://placehold.co/300x400', price: 150, description: 'drama, thriller, romans', genre: 'Thriller', director: 'Steven Spielberg', duration: 141 },
-        { id: 2, title: 'Gladiator', posterUrl: 'https://placehold.co/300x400', price: 160, description: 'drama, action, romans', genre: 'Action', director: 'Ridley Scott', duration: 155 },
-        { id: 3, title: 'Starwars', posterUrl: 'https://placehold.co/300x400', price: 170, description: 'action, sci-fi, fantasy', genre: 'Sci-Fi', director: 'George Lucas', duration: 121 }
-      ]
+      // const mockMovies = [
+        // { id: 1, title: 'Catch me if you can', posterUrl: 'https://placehold.co/300x400', price: 150, description: 'drama, thriller, romans', genre: 'Thriller', director: 'Steven Spielberg', duration: 141 },
+        // { id: 2, title: 'Gladiator', posterUrl: 'https://placehold.co/300x400', price: 160, description: 'drama, action, romans', genre: 'Action', director: 'Ridley Scott', duration: 155 },
+        // { id: 3, title: 'Starwars', posterUrl: 'https://placehold.co/300x400', price: 170, description: 'action, sci-fi, fantasy', genre: 'Sci-Fi', director: 'George Lucas', duration: 121 }
+      // ]
       
-      const mockShows = [
-        { id: 1, date: '2024-01-15', time: '18:00', price: 150, availableSeats: 50 },
-        { id: 2, date: '2024-01-15', time: '20:30', price: 150, availableSeats: 30 },
-        { id: 3, date: '2024-01-16', time: '19:00', price: 150, availableSeats: 45 }
-      ]
+      // const mockShows = [
+        // { id: 1, date: '2024-01-15', time: '18:00', price: 150, availableSeats: 50 },
+        // { id: 2, date: '2024-01-15', time: '20:30', price: 150, availableSeats: 30 },
+        // { id: 3, date: '2024-01-16', time: '19:00', price: 150, availableSeats: 45 }
+      // ]
       
       const movieData = mockMovies.find(m => m.id.toString() === movieId)
       if (movieData) {
