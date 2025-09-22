@@ -52,10 +52,6 @@ function HomePage() {
 
   return (
     <div>
-      <header className="app-header">
-        <h1 className="app-title">🎬 Cinema Malmö</h1>
-      </header>
-      
       <div className="app-container">
         <h2 className="section-header">Välj Film</h2>
         {loading && <div className="loading-message">Laddar filmer...</div>}

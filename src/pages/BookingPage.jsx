@@ -254,10 +254,6 @@ function BookingPage() {
 
   return (
     <div>
-      <header className="app-header">
-        <h1 className="app-title">🎬 Malmö bokning</h1>
-      </header>
-      
       <div className="app-container">
         {loading && <div className="loading-message">Laddar bokningssida...</div>}
         {error && <div className="error-message">{error}</div>}
