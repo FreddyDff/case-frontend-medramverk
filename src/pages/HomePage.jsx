@@ -26,6 +26,8 @@ function HomePage() {
       const formattedMovies = validMovies.map(movie => {
         // Fallback images for specific movies
         let posterUrl = movie.posterUrl
+        let description = movie.description
+        
         if (!posterUrl || posterUrl === 'string') {
           switch (movie.title) {
             case 'Inception':
@@ -48,10 +50,36 @@ function HomePage() {
           }
         }
         
+        // Översätt beskrivningar till svenska
+        if (description && description !== 'string') {
+          switch (movie.title) {
+            case 'Inception':
+              description = 'En tjuv som tränger in i andras drömmar för att stjäla hemligheter från deras undermedvetna. En komplex berättelse om drömmar inom drömmar.'
+              break
+            case 'The Godfather':
+              description = 'Den åldrande patriarken i en organiserad brottslig dynasti överför kontrollen av sitt hemliga imperium till sin motvillige son.'
+              break
+            case 'The Shawshank Redemption':
+              description = 'Två fångar skapar ett band över flera år och finner tröst och slutlig förlossning genom handlingar av vanlig anständighet.'
+              break
+            case 'The Dark Knight':
+              description = 'När hotet som kallas Jokern skapar kaos och förödelse i Gotham, måste Batman acceptera ett av de största psykologiska och fysiska testerna av sin förmåga att bekämpa orättvisa.'
+              break
+            case 'Pulp Fiction':
+              description = 'Livet för två maffia-mördare, en boxare, en gangster och hans fru, och ett par restaurangrånare sammanflätas i fyra berättelser om våld och förlossning.'
+              break
+            default:
+              // Behåll originalbeskrivningen om den inte är 'string'
+              break
+          }
+        } else {
+          description = 'Ingen beskrivning tillgänglig'
+        }
+        
         return {
           id: movie._id,
           title: movie.title,
-          description: movie.description,
+          description: description,
           genre: movie.genre,
           director: movie.director,
           duration: movie.duration,
