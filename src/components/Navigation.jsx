@@ -7,7 +7,7 @@ function Navigation() {
     <nav className="main-navigation">
       <div className="nav-container">
         <Link to="/" className="nav-logo">
-          🎬 Cinema Booking
+          🎬 Cinema Malmö
         </Link>
         
         <div className="nav-links">
