@@ -97,7 +97,7 @@ src/
 ### Installation
 ```bash
 # Klona repository
-git clone [repository-url]
+git clone https://github.com/FreddyDff/case-frontend-medramverk.git
 
 # Navigera till projektmappen
 cd case-frontend-medramverk
@@ -121,6 +121,22 @@ npm run preview
 - `npm run preview` - Förhandsvisar produktionsbuild
 - `npm run lint` - Kör ESLint för kodkvalitetskontroll
 
+## 🌐 Live Deployment
+
+### Vercel Deployment
+Denna applikation är live deployad på Vercel och kan nås via:
+**Live URL:** [https://case-frontend-medramverk.vercel.app](https://case-frontend-medramverk.vercel.app)
+
+### Deployment-historik
+- **Försökt med Hoster.glimnet (Dokploy)**: Flera försök gjordes att deploya via Hoster.glimnet's Dokploy-plattform, men deployment-processen misslyckades upprepade gånger trots korrekt konfiguration och felfri kod.
+- **Vercel som alternativ**: Vercel valdes som alternativ deployment-plattform och fungerade smidigt med automatisk GitHub-integration och enkel konfiguration.
+
+### Vercel-fördelar
+- **Automatisk deployment**: Varje push till main branch triggar automatiskt redeployment
+- **GitHub-integration**: Smidig koppling med GitHub-repository
+- **Global CDN**: Snabb laddningstid över hela världen
+- **Enkel konfiguration**: Automatisk upptäckt av Vite-projekt
+
 ## 📱 Responsiv Design
 
 Applikationen är fullt responsiv och anpassar sig till:
@@ -132,7 +148,7 @@ Applikationen är fullt responsiv och anpassar sig till:
 
 ### Planerade Funktioner
 - Användarautentisering och profiler
-- Betalningsintegration
+- Betalningsintegration (ej implementerad - endast bokningssystem utan betalning)
 - E-postnotifikationer
 - Admin-panel för filmhantering
 - Favoritfilmer och användarhistorik
