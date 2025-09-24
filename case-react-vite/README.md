@@ -125,7 +125,7 @@ npm run preview
 
 ### Vercel Deployment
 Denna applikation är live deployad på Vercel och kan nås via:
-**Live URL:** [https://case-frontend-medramverk.vercel.app](https://case-frontend-medramverk.vercel.app)
+**Live URL:** [https://cinema-malmo.vercel.app](https://cinema-malmo.vercel.app)
 
 ### Deployment-historik
 - **Försökt med Hoster.glimnet (Dokploy)**: Flera försök gjordes att deploya via Hoster.glimnet's Dokploy-plattform, men deployment-processen misslyckades upprepade gånger trots korrekt konfiguration och felfri kod.
