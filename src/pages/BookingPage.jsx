@@ -19,21 +19,14 @@ function BookingPage() {
   const [bookingComplete, setBookingComplete] = useState(false)
   const [bookingDetails, setBookingDetails] = useState(null)
 
-  // Generera säteskarta baserat på tillgängliga platser
+  // Generera säteskarta baserat på tillgängliga platser från API:et
   const generateSeats = () => {
     if (selectedShow && selectedShow.availableSeatsList) {
       // Använd bara platser som finns i API:et
       return selectedShow.availableSeatsList.concat(selectedShow.bookedSeats || [])
     }
-    // Fallback till standard layout
-    const seats = []
-    const rows = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
-    rows.forEach(row => {
-      for (let i = 1; i <= 12; i++) {
-        seats.push(`${row}${i}`)
-      }
-    })
-    return seats
+    // Om ingen data finns från API:et, returnera tom array
+    return []
   }
   
   const allSeats = generateSeats()
@@ -51,76 +44,6 @@ function BookingPage() {
   const loadMovieData = async () => {
     setLoading(true)
     setError(null)
-    
-    // Använd mock-data för The Dark Knight för att visa flera föreställningar
-    if (movieId && movieId.includes('dark') || movieId && movieId.includes('knight')) {
-      console.log('Using mock data for The Dark Knight to show multiple shows')
-      
-      const mockMovies = [
-        {
-          id: movieId,
-          title: 'The Dark Knight',
-          description: 'When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.',
-          genre: 'Action',
-          director: 'Christopher Nolan',
-          duration: 152,
-          posterUrl: 'https://m.media-amazon.com/images/M/MV5BMTMxNTMwODM0NF5BMl5BanBnXkFtZTcwODAyMTk2Mw@@._V1_SX300.jpg',
-          price: 150
-        }
-      ]
-      
-      const mockShows = [
-        {
-          id: '1',
-          date: 'tisdag 30 september 2025',
-          time: '20:00',
-          price: 100,
-          availableSeats: 50,
-          bookedSeats: [],
-          roomNumber: 1,
-          availableSeatsList: ['A1', 'A2', 'A3', 'A4', 'A5', 'B1', 'B2', 'B3', 'B4', 'B5']
-        },
-        {
-          id: '2',
-          date: 'onsdag 1 oktober 2025',
-          time: '18:30',
-          price: 100,
-          availableSeats: 45,
-          bookedSeats: ['A1', 'A2'],
-          roomNumber: 1,
-          availableSeatsList: ['A3', 'A4', 'A5', 'B1', 'B2', 'B3', 'B4', 'B5']
-        },
-        {
-          id: '3',
-          date: 'torsdag 2 oktober 2025',
-          time: '21:00',
-          price: 100,
-          availableSeats: 40,
-          bookedSeats: ['B1', 'B2', 'B3'],
-          roomNumber: 1,
-          availableSeatsList: ['A1', 'A2', 'A3', 'A4', 'A5', 'B4', 'B5']
-        },
-        {
-          id: '4',
-          date: 'fredag 3 oktober 2025',
-          time: '19:15',
-          price: 100,
-          availableSeats: 48,
-          bookedSeats: ['A5'],
-          roomNumber: 1,
-          availableSeatsList: ['A1', 'A2', 'A3', 'A4', 'B1', 'B2', 'B3', 'B4', 'B5']
-        }
-      ]
-      
-      setMovie(mockMovies[0])
-      setShows(mockShows)
-      if (mockShows.length > 0) {
-        setSelectedShow(mockShows[0])
-        setBookedSeats(mockShows[0].bookedSeats || [])
-      }
-      setLoading(false)
-      return
-    }
     
     try {
       console.log('Loading movie data for ID:', movieId)
@@ -144,24 +67,26 @@ function BookingPage() {
       
       // Hitta filmen baserat på ID (API använder _id)
       const movieData = validMovies.find(m => m._id === movieId)
-      if (movieData) {
-        // Konvertera API-format till vårt format
-        const formattedMovie = {
-          id: movieData._id,
-          title: movieData.title,
-          description: movieData.description,
-          genre: movieData.genre,
-          director: movieData.director,
-          duration: movieData.duration,
-          posterUrl: movieData.posterUrl,
-          price: 150 // Standardpris
-        }
-        setMovie(formattedMovie)
-        console.log('Found movie:', formattedMovie)
-      } else {
+      if (!movieData) {
         console.log('Movie not found for ID:', movieId)
-        setError(`Film med ID ${movieId} hittades inte`)
+        setError(`Film med ID ${movieId} hittades inte. Vänligen gå tillbaka och välj en annan film.`)
+        setLoading(false)
+        return
       }
+      
+      // Konvertera API-format till vårt format
+      const formattedMovie = {
+        id: movieData._id,
+        title: movieData.title,
+        description: movieData.description,
+        genre: movieData.genre,
+        director: movieData.director,
+        duration: movieData.duration,
+        posterUrl: movieData.posterUrl,
+        price: 150 // Standardpris
+      }
+      setMovie(formattedMovie)
+      console.log('Found movie:', formattedMovie)
       
       // Konvertera shows-data
       const formattedShows = showsData.map(show => ({
@@ -180,81 +105,20 @@ function BookingPage() {
         availableSeatsList: show.availableSeats // Spara tillgängliga platser
       }))
       
-      setShows(formattedShows)
-      if (formattedShows.length > 0) {
+      if (formattedShows.length === 0) {
+        setError('Inga föreställningar hittades för denna film. Vänligen försök igen senare.')
+        setShows([])
+      } else {
+        setShows(formattedShows)
         setSelectedShow(formattedShows[0])
         // Uppdatera upptagna platser från första föreställningen
         setBookedSeats(formattedShows[0].bookedSeats || [])
       }
     } catch (error) {
       console.error('Error loading movie data:', error)
-      console.log('Falling back to mock data...')
-      
-      // Fallback till mock-data om API:et inte fungerar
-      const mockMovies = [
-        {
-          id: movieId, // Använd samma ID som kommer från URL:en
-          title: 'The Dark Knight',
-          description: 'When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.',
-          genre: 'Action',
-          director: 'Christopher Nolan',
-          duration: 152,
-          posterUrl: 'https://m.media-amazon.com/images/M/MV5BMTMxNTMwODM0NF5BMl5BanBnXkFtZTcwODAyMTk2Mw@@._V1_SX300.jpg',
-          price: 150
-        }
-      ]
-      
-      const mockShows = [
-        {
-          id: '1',
-          date: 'tisdag 30 september 2025',
-          time: '20:00',
-          price: 100,
-          availableSeats: 50,
-          bookedSeats: [],
-          roomNumber: 1,
-          availableSeatsList: ['A1', 'A2', 'A3', 'A4', 'A5', 'B1', 'B2', 'B3', 'B4', 'B5']
-        },
-        {
-          id: '2',
-          date: 'onsdag 1 oktober 2025',
-          time: '18:30',
-          price: 100,
-          availableSeats: 45,
-          bookedSeats: ['A1', 'A2'],
-          roomNumber: 1,
-          availableSeatsList: ['A3', 'A4', 'A5', 'B1', 'B2', 'B3', 'B4', 'B5']
-        },
-        {
-          id: '3',
-          date: 'torsdag 2 oktober 2025',
-          time: '21:00',
-          price: 100,
-          availableSeats: 40,
-          bookedSeats: ['B1', 'B2', 'B3'],
-          roomNumber: 1,
-          availableSeatsList: ['A1', 'A2', 'A3', 'A4', 'A5', 'B4', 'B5']
-        },
-        {
-          id: '4',
-          date: 'fredag 3 oktober 2025',
-          time: '19:15',
-          price: 100,
-          availableSeats: 48,
-          bookedSeats: ['A5'],
-          roomNumber: 1,
-          availableSeatsList: ['A1', 'A2', 'A3', 'A4', 'B1', 'B2', 'B3', 'B4', 'B5']
-        }
-      ]
-      
-      // Använd mock-data för alla filmer när API:et inte fungerar
-      setMovie(mockMovies[0])
-      setShows(mockShows)
-      if (mockShows.length > 0) {
-        setSelectedShow(mockShows[0])
-        setBookedSeats(mockShows[0].bookedSeats || [])
-      }
-      console.log('Using mock data for movie:', mockMovies[0])
+      setError(`Kunde inte ladda filmdata. Vänligen kontrollera din internetanslutning och försök igen. Fel: ${error.message}`)
+      setMovie(null)
+      setShows([])
     } finally {
       setLoading(false)
     }
@@ -428,31 +292,39 @@ function BookingPage() {
             {/* Säteskarta */}
             <div className="seat-selection">
               <h3>Välj platser</h3>
-              <p className="seat-instruction">
-                Vi har förvalt de bästa platserna. Klicka för att välja platser.
-              </p>
-              
+              {selectedShow && allSeats.length > 0 ? (
+                <>
+                  <p className="seat-instruction">
+                    Vi har förvalt de bästa platserna. Klicka för att välja platser.
+                  </p>
+                  
                   <div className="cinema-screen">
                     <div className="screen">FILMDUK</div>
                   </div>
-              
-              <div className="seat-map">
-                {allSeats.map(seat => {
-                  const isBooked = bookedSeats.includes(seat)
-                  const isSelected = selectedSeats.includes(seat)
-                  const isAvailable = selectedShow?.availableSeatsList?.includes(seat)
-                  return (
-                    <button
-                      key={seat}
-                      className={`seat ${isBooked ? 'occupied' : isSelected ? 'selected' : isAvailable ? 'available' : 'unavailable'}`}
-                      onClick={() => handleSeatClick(seat)}
-                      disabled={isBooked || !isAvailable}
-                    >
-                      {seat}
-                    </button>
-                  )
-                })}
-              </div>
+                  
+                  <div className="seat-map">
+                    {allSeats.map(seat => {
+                      const isBooked = bookedSeats.includes(seat)
+                      const isSelected = selectedSeats.includes(seat)
+                      const isAvailable = selectedShow?.availableSeatsList?.includes(seat)
+                      return (
+                        <button
+                          key={seat}
+                          className={`seat ${isBooked ? 'occupied' : isSelected ? 'selected' : isAvailable ? 'available' : 'unavailable'}`}
+                          onClick={() => handleSeatClick(seat)}
+                          disabled={isBooked || !isAvailable}
+                        >
+                          {seat}
+                        </button>
+                      )
+                    })}
+                  </div>
+                </>
+              ) : (
+                <div className="error-message">
+                  <p>Inga platser tillgängliga för denna föreställning. Vänligen välj en annan föreställning.</p>
+                </div>
+              )}
               
               <div className="seat-legend">
                 <div className="legend-item">
@@ -505,9 +377,9 @@ function BookingPage() {
             </div>
           </div>
         )}
-        {!movie && !loading && !error && (
+        {!movie && !loading && (
           <div className="error-message">
-            <p>Ingen filmdata tillgänglig. Gå tillbaka till startsidan.</p>
+            <p>{error || 'Ingen filmdata tillgänglig. Gå tillbaka till startsidan.'}</p>
             <button onClick={() => navigate('/')} className="back-button">
               Tillbaka till filmer
             </button>
