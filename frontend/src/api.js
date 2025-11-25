@@ -1,4 +1,4 @@
-const API_BASE = 'https://cinema-api.henrybergstrom.com/api/v1'
+const API_BASE = 'http://localhost:3000'
 
 export const fetchMovies = async () => {
   const response = await fetch(`${API_BASE}/movies`)
@@ -63,10 +63,13 @@ export const createBooking = async (bookingData) => {
 
 export const updateBooking = async (id, bookingData) => {
   const response = await fetch(`${API_BASE}/bookings/${id}`, {
-    method: 'PATCH',
+    method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(bookingData)
   })
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`)
+  }
   return response.json()
 }
 
@@ -74,6 +77,13 @@ export const deleteBooking = async (id) => {
   const response = await fetch(`${API_BASE}/bookings/${id}`, {
     method: 'DELETE'
   })
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`)
+  }
+  // 204 No Content returnerar ingen JSON, så vi returnerar null
+  if (response.status === 204) {
+    return null
+  }
   return response.json()
 }
 

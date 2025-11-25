@@ -1,6 +1,7 @@
 import { connectDB } from './config/database.js';
 import movieRoutes from './routes/movieRoutes.js';
 import showRoutes from './routes/showRoutes.js';
+import bookingRoutes from './routes/bookingRoutes.js';
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
@@ -21,7 +22,7 @@ connectDB();
 // Routes
 app.use('/movies', movieRoutes);
 app.use('/shows', showRoutes);
-// app.use('/bookings', bookingRoutes);  // Kommer att läggas till senare
+app.use('/bookings', bookingRoutes);
 
 
 // Starta server
