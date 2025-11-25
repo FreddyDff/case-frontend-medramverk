@@ -17,12 +17,14 @@ function BookingPage() {
     selectedSeats,
     ticketCount,
     email,
+    name,
     loading,
     error,
     bookingComplete,
     bookingDetails,
     setTicketCount,
     setEmail,
+    setName,
     handleSeatClick,
     handleShowSelect,
     handleBooking
@@ -52,14 +54,14 @@ function BookingPage() {
           </div>
           <div className="confirmation-details">
             <h3>Bokningsdetaljer:</h3>
+            <p><strong>Namn:</strong> {bookingDetails.name}</p>
             <p><strong>Email:</strong> {bookingDetails.email}</p>
             <p><strong>Film:</strong> {bookingDetails.movieTitle}</p>
             <p><strong>Datum:</strong> {bookingDetails.date}</p>
             <p><strong>Tid:</strong> {bookingDetails.time}</p>
-            <p><strong>Platser:</strong> {bookingDetails.seatNumbers?.join(', ')}</p>
+            <p><strong>Platser:</strong> {bookingDetails.seatNumbers?.join(', ') || 'Ej angivet'}</p>
             <p><strong>Antal biljetter:</strong> {bookingDetails.ticketCount}</p>
-            <p><strong>Pris:</strong> {bookingDetails.price * bookingDetails.ticketCount} SEK</p>
-            {bookingDetails.id && <p><strong>Bokningsnummer:</strong> {bookingDetails.id}</p>}
+            {bookingDetails._id && <p><strong>Bokningsnummer:</strong> {bookingDetails._id}</p>}}
           </div>
           <div>
             <button 
@@ -194,16 +196,25 @@ function BookingPage() {
               </div>
             </div>
 
-            {/* Email Input */}
+            {/* Name and Email Input */}
             <div className="email-section">
-              <h3>Biljettleverans</h3>
+              <h3>Kontaktinformation</h3>
               <p>För biljetter och bokningsbekräftelse.</p>
+              <input
+                type="text"
+                placeholder="Fyll i ditt namn"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="email-input"
+                required
+              />
               <input
                 type="email"
                 placeholder="Fyll i din e-postadress"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="email-input"
+                required
               />
             </div>
 
@@ -214,7 +225,7 @@ function BookingPage() {
             <div className="booking-section">
               <button
                 onClick={handleBooking}
-                disabled={loading || !email || selectedSeats.length !== ticketCount}
+                disabled={loading || !name || !email || selectedSeats.length !== ticketCount}
                 className="booking-button"
               >
                 {loading ? 'Bokar...' : `Fortsätt till betalning (${selectedSeats.length}/${ticketCount})`}

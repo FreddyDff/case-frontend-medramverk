@@ -12,6 +12,7 @@ export function useBooking(movieId) {
   const [selectedSeats, setSelectedSeats] = useState([])
   const [ticketCount, setTicketCount] = useState(2)
   const [email, setEmail] = useState('')
+  const [name, setName] = useState('')
   
   // State för loading och fel
   const [loading, setLoading] = useState(false)
@@ -150,8 +151,8 @@ export function useBooking(movieId) {
 
   // Hantera bokning
   const handleBooking = async () => {
-    if (!email || selectedSeats.length !== ticketCount) {
-      setError('Vänligen fyll i email och välj rätt antal platser')
+    if (!name || !email || selectedSeats.length !== ticketCount) {
+      setError('Vänligen fyll i namn, email och välj rätt antal platser')
       return
     }
 
@@ -159,17 +160,16 @@ export function useBooking(movieId) {
     setError(null)
     try {
       console.log('Creating booking with data:', {
+        name: name,
         email: email,
-        show: selectedShow.id,
-        seats: selectedSeats,
-        totalPrice: (selectedShow.price || 150) * ticketCount
+        showId: selectedShow.id
       })
 
+      // Backend förväntar sig: { name, email, showId }
       const bookingData = {
+        name: name,
         email: email,
-        show: selectedShow.id,
-        seats: selectedSeats,
-        totalPrice: (selectedShow.price || 150) * ticketCount
+        showId: selectedShow.id  // Backend förväntar sig showId, inte show
       }
       
       const booking = await createBooking(bookingData)
@@ -202,6 +202,7 @@ export function useBooking(movieId) {
     selectedSeats,
     ticketCount,
     email,
+    name,
     loading,
     error,
     bookingComplete,
@@ -210,6 +211,7 @@ export function useBooking(movieId) {
     // Actions
     setTicketCount,
     setEmail,
+    setName,
     handleSeatClick,
     handleShowSelect,
     handleBooking

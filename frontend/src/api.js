@@ -42,7 +42,8 @@ export const createBooking = async (bookingData) => {
     method: 'POST',
     headers: { 
       'Content-Type': 'application/json',
-      'Accept': 'application/json'
+      'Accept': 'application/json',
+      'X-API-Key': 'valid-api-key'  // Backend kräver API-nyckel för alla booking-routes
     },
     body: JSON.stringify(bookingData)
   })
