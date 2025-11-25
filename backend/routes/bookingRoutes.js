@@ -20,39 +20,38 @@ import {
 } from '../controllers/bookingController.js';
 // ↑ Importerar funktionerna från controller-filen
 
+// 4. Importera validateApiKey middleware för autentisering
+import { validateApiKey } from '../middleware/auth.js';
+// ↑ Middleware som kontrollerar att API-nyckel finns och är giltig
+
 // ============================================================================
-// PUBLIKA ROUTES (inga krav på autentisering)
+// SKYDDADE ROUTES (alla routes kräver API-nyckel enligt testkraven)
 // ============================================================================
 
-// GET /bookings - Hämta alla bokningar
-router.get('/', getAllBookings);
-// ↑ När någon gör GET-request till /bookings, kör getAllBookings-funktionen
+// GET /bookings - Hämta alla bokningar (kräver API-nyckel)
+router.get('/', validateApiKey, getAllBookings);
+// ↑ validateApiKey körs först, sedan getAllBookings om API-nyckel är giltig
 
-// GET /bookings/show/:showId - Hämta alla bokningar för en specifik show
+// GET /bookings/show/:showId - Hämta alla bokningar för en specifik show (kräver API-nyckel)
 // ↑ Viktigt: show-routen måste komma FÖRE /:id-routen, annars tolkas "show" som ett ID
-router.get('/show/:showId', getBookingsByShowId);
-// ↑ När någon gör GET-request till /bookings/show/123, kör getBookingsByShowId-funktionen
+router.get('/show/:showId', validateApiKey, getBookingsByShowId);
+// ↑ validateApiKey körs först, sedan getBookingsByShowId om API-nyckel är giltig
 
-// GET /bookings/:id - Hämta en specifik bokning med ID
-router.get('/:id', getBookingById);
-// ↑ När någon gör GET-request till /bookings/123, kör getBookingById-funktionen
+// GET /bookings/:id - Hämta en specifik bokning med ID (kräver API-nyckel)
+router.get('/:id', validateApiKey, getBookingById);
+// ↑ validateApiKey körs först, sedan getBookingById om API-nyckel är giltig
 
-// ============================================================================
-// SKYDDADE ROUTES (kräver autentisering - kan läggas till senare om behövs)
-// ============================================================================
+// POST /bookings - Skapa en ny bokning (kräver API-nyckel)
+router.post('/', validateApiKey, createBooking);
+// ↑ validateApiKey körs först, sedan createBooking om API-nyckel är giltig
 
-// POST /bookings - Skapa en ny bokning
-router.post('/', createBooking);
-// ↑ När någon gör POST-request till /bookings, kör createBooking-funktionen
-// ↑ I produktion skulle man kunna lägga till validateApiKey här om bokningar ska vara skyddade
+// PUT /bookings/:id - Uppdatera en bokning (kräver API-nyckel)
+router.put('/:id', validateApiKey, updateBooking);
+// ↑ validateApiKey körs först, sedan updateBooking om API-nyckel är giltig
 
-// PUT /bookings/:id - Uppdatera en bokning
-router.put('/:id', updateBooking);
-// ↑ När någon gör PUT-request till /bookings/123, kör updateBooking-funktionen
-
-// DELETE /bookings/:id - Ta bort en bokning
-router.delete('/:id', deleteBooking);
-// ↑ När någon gör DELETE-request till /bookings/123, kör deleteBooking-funktionen
+// DELETE /bookings/:id - Ta bort en bokning (kräver API-nyckel)
+router.delete('/:id', validateApiKey, deleteBooking);
+// ↑ validateApiKey körs först, sedan deleteBooking om API-nyckel är giltig
 
 // ============================================================================
 // EXPORTERA ROUTER
