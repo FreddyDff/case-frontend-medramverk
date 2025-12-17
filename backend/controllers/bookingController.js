@@ -114,9 +114,10 @@ const createBooking = async (req, res) => {
             // ↑ status(400) = bad request (fel data skickad)
         }
         
-        // Steg 4: Validera email-format (enkel kontroll)
-        if (!bookingData.email.includes('@')) {
-            // Om email inte innehåller @, skicka tillbaka 400
+        // Steg 4: Validera email-format med regex
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(bookingData.email)) {
+            // Om email inte matchar korrekt format, skicka tillbaka 400
             return res.status(400).json({ error: 'Ogiltigt email-format' });
         }
         
@@ -196,10 +197,13 @@ const updateBooking = async (req, res) => {
             updateData.showId = showId;
         }
         
-        // Steg 6: Om email ska uppdateras, validera email-format
-        if (updateData.email && !updateData.email.includes('@')) {
-            // Om email inte innehåller @, skicka tillbaka 400
-            return res.status(400).json({ error: 'Ogiltigt email-format' });
+        // Steg 6: Om email ska uppdateras, validera email-format med regex
+        if (updateData.email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(updateData.email)) {
+                // Om email inte matchar korrekt format, skicka tillbaka 400
+                return res.status(400).json({ error: 'Ogiltigt email-format' });
+            }
         }
         
         // Steg 7: Uppdatera bokningen i databasen
