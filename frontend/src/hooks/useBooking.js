@@ -151,8 +151,19 @@ export function useBooking(movieId) {
 
   // Hantera bokning
   const handleBooking = async () => {
-    if (!name || !email || selectedSeats.length !== ticketCount) {
-      setError('Vänligen fyll i namn, email och välj rätt antal platser')
+    // Validera att allt är korrekt innan bokning
+    if (!name || !email) {
+      setError('Vänligen fyll i både namn och email')
+      return
+    }
+    
+    if (!selectedShow || !selectedShow.id) {
+      setError('Vänligen välj en föreställning')
+      return
+    }
+    
+    if (selectedSeats.length !== ticketCount) {
+      setError(`Vänligen välj ${ticketCount} platser (du har valt ${selectedSeats.length})`)
       return
     }
 
@@ -175,20 +186,26 @@ export function useBooking(movieId) {
       const booking = await createBooking(bookingData)
       console.log('Booking created successfully:', booking)
       
-      setBookingDetails({
+      // Sätt bookingDetails FÖRE setBookingComplete för att säkerställa att data finns
+      const details = {
         ...booking,
-        movieTitle: movie.title,
-        date: selectedShow.date,
-        time: selectedShow.time,
+        name: name,  // Säkerställ att name finns
+        email: email,  // Säkerställ att email finns
+        movieTitle: movie?.title || 'Okänd film',
+        date: selectedShow?.date || 'Ej angivet',
+        time: selectedShow?.time || 'Ej angivet',
         seatNumbers: selectedSeats,
         ticketCount: ticketCount
-      })
+      }
+      
+      setBookingDetails(details)
       setBookingComplete(true)
+      setLoading(false)  // Sätt loading till false när bokning är klar
     } catch (error) {
       console.error('Booking error:', error)
       setError(`Bokningen misslyckades: ${error.message}`)
     } finally {
-      setLoading(false)
+      setLoading(false)  // Säkerställ att loading alltid sätts till false
     }
   }
 

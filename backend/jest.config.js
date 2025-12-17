@@ -9,7 +9,6 @@ export default {
     coverageDirectory: 'coverage',
     verbose: true,
     transform: {},
-    extensionsToTreatAsEsm: ['.js'],
     globals: {
       'ts-jest': {
         useESM: true,

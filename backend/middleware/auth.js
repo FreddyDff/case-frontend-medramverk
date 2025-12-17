@@ -8,12 +8,15 @@ const validateApiKey = (req, res, next) => {
         return res.status(401).json({ error: 'API key required' });
     }
     
-    // Steg 3: Kontrollera om API-nyckeln är giltig
-    if (apiKey !== 'valid-api-key') {
+    // Steg 3: Hämta giltig API-nyckel från miljövariabler
+    const validApiKey = process.env.API_KEY || 'valid-api-key'; // Fallback för utveckling
+    
+    // Steg 4: Kontrollera om API-nyckeln är giltig
+    if (apiKey !== validApiKey) {
         return res.status(401).json({ error: 'Invalid API key' });
     }
     
-// Steg 4: Om allt är OK, låt requesten fortsätta // Fortsätter till nästa middleware eller route-handler
+// Steg 5: Om allt är OK, låt requesten fortsätta // Fortsätter till nästa middleware eller route-handler
 next(); 
 };
 

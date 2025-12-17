@@ -45,7 +45,7 @@ function BookingPage() {
     )
   }
 
-  if (bookingComplete) {
+  if (bookingComplete && bookingDetails) {
     return (
       <div className="app-container">
         <div className="confirmation-container">
@@ -54,14 +54,14 @@ function BookingPage() {
           </div>
           <div className="confirmation-details">
             <h3>Bokningsdetaljer:</h3>
-            <p><strong>Namn:</strong> {bookingDetails.name}</p>
-            <p><strong>Email:</strong> {bookingDetails.email}</p>
-            <p><strong>Film:</strong> {bookingDetails.movieTitle}</p>
-            <p><strong>Datum:</strong> {bookingDetails.date}</p>
-            <p><strong>Tid:</strong> {bookingDetails.time}</p>
+            <p><strong>Namn:</strong> {bookingDetails.name || 'Ej angivet'}</p>
+            <p><strong>Email:</strong> {bookingDetails.email || 'Ej angivet'}</p>
+            <p><strong>Film:</strong> {bookingDetails.movieTitle || 'Ej angivet'}</p>
+            <p><strong>Datum:</strong> {bookingDetails.date || 'Ej angivet'}</p>
+            <p><strong>Tid:</strong> {bookingDetails.time || 'Ej angivet'}</p>
             <p><strong>Platser:</strong> {bookingDetails.seatNumbers?.join(', ') || 'Ej angivet'}</p>
-            <p><strong>Antal biljetter:</strong> {bookingDetails.ticketCount}</p>
-            {bookingDetails._id && <p><strong>Bokningsnummer:</strong> {bookingDetails._id}</p>}}
+            <p><strong>Antal biljetter:</strong> {bookingDetails.ticketCount || 'Ej angivet'}</p>
+            {bookingDetails._id && <p><strong>Bokningsnummer:</strong> {bookingDetails._id}</p>}
           </div>
           <div>
             <button 
@@ -81,8 +81,8 @@ function BookingPage() {
   return (
     <div>
       <div className="app-container">
-        {loading && <div className="loading-message">Laddar bokningssida...</div>}
-        {error && <div className="error-message">{error}</div>}
+        {loading && !bookingComplete && <div className="loading-message">Laddar bokningssida...</div>}
+        {error && !bookingComplete && <div className="error-message">{error}</div>}
         {movie && (
           <div className="booking-page">
             {/* Film Info Header */}

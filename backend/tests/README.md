@@ -41,11 +41,7 @@ Tests är uppdelade i följande filer:
 
 ## Anmärkningar
 
-Alla tester är för närvarande kommenterade och innehåller bara teststruktur. För att aktivera testerna:
-
-1. Importera din Express app i varje testfil (använd ES6 `import` syntax)
-2. Avkommentera testkoden
-3. Uppdatera vägar och förväntningar baserat på din faktiska API-implementation
+Testerna är aktiva och testar alla CRUD-operationer för Movies, Shows och Bookings API:er. Testerna importerar Express-appen från `../app.js` och kör faktiska HTTP-requests mot API:et.
 
 ## ES6 Moduler
 

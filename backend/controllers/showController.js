@@ -74,6 +74,13 @@ const createShow = async (req, res) => {
         // Konvertera movieId till ObjectId i showData innan vi sparar
         showData.movieId = movieId;
         
+        // Validera att availableSeats är en array om det skickas med
+        if (showData.availableSeats !== undefined) {
+            if (!Array.isArray(showData.availableSeats)) {
+                return res.status(400).json({ error: 'availableSeats måste vara en array' });
+            }
+        }
+        
         // Skapa föreställningen
         const result = await showsCollection.insertOne(showData);
         const newShow = await showsCollection.findOne({ _id: result.insertedId });
@@ -90,7 +97,7 @@ const updateShow = async (req, res) => {
         const showsCollection = await getShowsCollection();
         const id = new ObjectId(req.params.id);
         
-        // Kontrollera om föreställningen finns
+        // Kontrollera om föreställningen finns  fråga nr 5!
         const existingShow = await showsCollection.findOne({ _id: id });
         if (!existingShow) {
             return res.status(404).json({ error: 'Föreställning hittades inte' });
@@ -98,6 +105,14 @@ const updateShow = async (req, res) => {
         
         // Uppdatera föreställningen
         const updateData = req.body;
+        
+        // Validera att availableSeats är en array om det skickas med
+        if (updateData.availableSeats !== undefined) {
+            if (!Array.isArray(updateData.availableSeats)) {
+                return res.status(400).json({ error: 'availableSeats måste vara en array' });
+            }
+        }
+        
         await showsCollection.updateOne(
             { _id: id },
             { $set: updateData }
