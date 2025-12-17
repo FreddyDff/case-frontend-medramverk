@@ -74,6 +74,16 @@ const createShow = async (req, res) => {
         // Konvertera movieId till ObjectId i showData innan vi sparar
         showData.movieId = movieId;
         
+        // Validera att startTime är i framtiden
+        const startTime = new Date(showData.startTime);
+        if (isNaN(startTime.getTime())) {
+            return res.status(400).json({ error: 'Ogiltigt startTime-format' });
+        }
+        const now = new Date();
+        if (startTime <= now) {
+            return res.status(400).json({ error: 'startTime måste vara i framtiden' });
+        }
+        
         // Validera att availableSeats är en array om det skickas med
         if (showData.availableSeats !== undefined) {
             if (!Array.isArray(showData.availableSeats)) {
@@ -105,6 +115,18 @@ const updateShow = async (req, res) => {
         
         // Uppdatera föreställningen
         const updateData = req.body;
+        
+        // Validera att startTime är i framtiden om det uppdateras
+        if (updateData.startTime !== undefined) {
+            const startTime = new Date(updateData.startTime);
+            if (isNaN(startTime.getTime())) {
+                return res.status(400).json({ error: 'Ogiltigt startTime-format' });
+            }
+            const now = new Date();
+            if (startTime <= now) {
+                return res.status(400).json({ error: 'startTime måste vara i framtiden' });
+            }
+        }
         
         // Validera att availableSeats är en array om det skickas med
         if (updateData.availableSeats !== undefined) {
