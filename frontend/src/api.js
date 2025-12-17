@@ -1,11 +1,23 @@
-const API_BASE = 'http://localhost:3000'
+// Använd miljövariabel för API URL, fallback till localhost för utveckling
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'
 
 export const fetchMovies = async () => {
-  const response = await fetch(`${API_BASE}/movies`)
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`)
+  try {
+    const response = await fetch(`${API_BASE}/movies`)
+    if (!response.ok) {
+      const errorText = await response.text()
+      console.error('Failed to fetch movies:', response.status, errorText)
+      throw new Error(`HTTP error! status: ${response.status}`)
+    }
+    return response.json()
+  } catch (error) {
+    // Om det är ett nätverksfel (t.ex. backend är nere)
+    if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+      console.error('Network error - is backend server running?', API_BASE)
+      throw new Error('Kunde inte ansluta till servern. Kontrollera att backend-servern körs.')
+    }
+    throw error
   }
-  return response.json()
 }
 
 export const fetchShows = async () => {
