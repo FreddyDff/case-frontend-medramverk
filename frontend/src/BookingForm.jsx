@@ -2,6 +2,7 @@ import { useState } from 'react'
 
 function BookingForm({ show, onBookingComplete, bookTicket }) {
     const [email, setEmail] = useState('')
+    const [name, setName] = useState('')
     const [selectedSeat, setSelectedSeat] = useState('')
     const [isBooking, setIsBooking] = useState(false)
     const [error, setError] = useState('')
@@ -22,8 +23,8 @@ function BookingForm({ show, onBookingComplete, bookTicket }) {
     const [bookedSeats, setBookedSeats] = useState([]) // Här skulle du hämta från API
   
     const handleBooking = async () => {
-      if (!email || !selectedSeat) {
-        setError('Vänligen fyll i email och välj en plats')
+      if (!email || !name || !selectedSeat) {
+        setError('Vänligen fyll i namn, email och välj en plats')
         return
       }
       
@@ -31,14 +32,11 @@ function BookingForm({ show, onBookingComplete, bookTicket }) {
       setError('')
       
       try {
+        // Backend förväntar sig: { name, email, showId }
         const bookingData = {
-          showId: show.id,
-          seatNumber: selectedSeat,
+          showId: show.id,  // Backend förväntar sig showId, inte show
+          name: name,
           email: email,
-          movieTitle: show.movie?.title || 'Okänd film',
-          date: show.date,
-          time: show.time,
-          price: show.price || 150
         }
         
         const booking = await bookTicket(bookingData)
@@ -64,6 +62,18 @@ function BookingForm({ show, onBookingComplete, bookTicket }) {
         </div>
         
         <div className="email-input">
+          <label htmlFor="name">Ditt namn:</label>
+          <input 
+            id="name"
+            type="text" 
+            placeholder="Ditt namn"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+          />
+        </div>
+        
+        <div className="email-input">
           <label htmlFor="email">Din email:</label>
           <input 
             id="email"
@@ -71,6 +81,7 @@ function BookingForm({ show, onBookingComplete, bookTicket }) {
             placeholder="din@email.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            required
           />
         </div>
         
@@ -112,7 +123,7 @@ function BookingForm({ show, onBookingComplete, bookTicket }) {
         
         <button 
           onClick={handleBooking}
-          disabled={isBooking || !email || !selectedSeat}
+          disabled={isBooking || !email || !name || !selectedSeat}
           className="booking-button"
         >
           {isBooking ? 'Bokar...' : 'Boka biljett'}
