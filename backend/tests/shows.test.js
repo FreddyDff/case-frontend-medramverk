@@ -64,7 +64,7 @@ describe('Shows API', () => {
       const movieId = moviesResponse.body[0]._id;
       const showData = {
         movieId: movieId.toString(),
-        startTime: new Date().toISOString(),
+        startTime: new Date(Date.now() + 3600000).toISOString(), // 1 timme i framtiden
         availableSeats: ['A1', 'A2', 'A3'],
         pricePerSeat: 150,
         roomNumber: 1,
@@ -93,7 +93,10 @@ describe('Shows API', () => {
     const moviesResponse = await request(app).get('/movies');
     if (moviesResponse.body.length > 0) {
       const movieId = moviesResponse.body[0]._id;
-      const showData = { movieId: movieId.toString(), startTime: new Date().toISOString() };
+      const showData = { 
+        movieId: movieId.toString(), 
+        startTime: new Date(Date.now() + 3600000).toISOString() // 1 timme i framtiden
+      };
       const response = await request(app)
         .post('/shows')
         .send(showData);
@@ -123,13 +126,53 @@ describe('Shows API', () => {
   it('should return 400 when creating show with invalid movieId', async () => {
     const showData = {
       movieId: '507f1f77bcf86cd799439011', // Ogiltigt movieId
-      startTime: new Date().toISOString(),
+      startTime: new Date(Date.now() + 3600000).toISOString(), // 1 timme i framtiden
     };
     const response = await request(app)
       .post('/shows')
       .set('X-API-Key', 'valid-api-key')
       .send(showData);
     expect(response.status).toBe(400);
+  });
+
+  // Testfall för POST /shows - Validering av startTime i framtiden
+  it('should return 400 when creating show with startTime in the past', async () => {
+    const moviesResponse = await request(app).get('/movies');
+    if (moviesResponse.body.length > 0) {
+      const movieId = moviesResponse.body[0]._id;
+      const showData = {
+        movieId: movieId.toString(),
+        startTime: new Date(Date.now() - 3600000).toISOString(), // 1 timme i det förflutna
+      };
+      const response = await request(app)
+        .post('/shows')
+        .set('X-API-Key', 'valid-api-key')
+        .send(showData);
+      expect(response.status).toBe(400);
+      expect(response.body.error).toContain('startTime måste vara i framtiden');
+    } else {
+      expect(true).toBe(true);
+    }
+  });
+
+  // Testfall för POST /shows - Validering av ogiltigt startTime-format
+  it('should return 400 when creating show with invalid startTime format', async () => {
+    const moviesResponse = await request(app).get('/movies');
+    if (moviesResponse.body.length > 0) {
+      const movieId = moviesResponse.body[0]._id;
+      const showData = {
+        movieId: movieId.toString(),
+        startTime: 'invalid-date-format',
+      };
+      const response = await request(app)
+        .post('/shows')
+        .set('X-API-Key', 'valid-api-key')
+        .send(showData);
+      expect(response.status).toBe(400);
+      expect(response.body.error).toContain('startTime');
+    } else {
+      expect(true).toBe(true);
+    }
   });
 
   // Testfall för PUT /shows/:id - Uppdatera en befintlig föreställning
@@ -140,7 +183,7 @@ describe('Shows API', () => {
       const movieId = moviesResponse.body[0]._id;
       const showData = {
         movieId: movieId.toString(),
-        startTime: new Date().toISOString(),
+        startTime: new Date(Date.now() + 3600000).toISOString(), // 1 timme i framtiden
         availableSeats: ['A1', 'A2'],
         pricePerSeat: 150,
         roomNumber: 1,
@@ -151,7 +194,7 @@ describe('Shows API', () => {
         .send(showData);
       
       if (createResponse.body._id) {
-        const newStartTime = new Date(Date.now() + 3600000).toISOString();
+        const newStartTime = new Date(Date.now() + 7200000).toISOString(); // 2 timmar i framtiden
         const updateData = { startTime: newStartTime };
         const response = await request(app)
           .put(`/shows/${createResponse.body._id}`)
@@ -177,7 +220,7 @@ describe('Shows API', () => {
     const allShowsResponse = await request(app).get('/shows');
     if (allShowsResponse.body.length > 0) {
       const showId = allShowsResponse.body[0]._id;
-      const updateData = { startTime: new Date().toISOString() };
+      const updateData = { startTime: new Date(Date.now() + 7200000).toISOString() }; // 2 timmar i framtiden
       const response = await request(app)
         .put(`/shows/${showId}`)
         .send(updateData);
@@ -189,7 +232,7 @@ describe('Shows API', () => {
 
   // Testfall för PUT /shows/:id - Försöka uppdatera icke-existerande föreställning
   it('should return 404 when updating non-existent show', async () => {
-    const updateData = { startTime: '2024-12-01T20:00:00Z' };
+    const updateData = { startTime: new Date(Date.now() + 7200000).toISOString() }; // 2 timmar i framtiden
     const response = await request(app)
       .put('/shows/507f1f77bcf86cd799439011')
       .set('X-API-Key', 'valid-api-key')
@@ -205,7 +248,7 @@ describe('Shows API', () => {
       const movieId = moviesResponse.body[0]._id;
       const showData = {
         movieId: movieId.toString(),
-        startTime: new Date().toISOString(),
+        startTime: new Date(Date.now() + 3600000).toISOString(), // 1 timme i framtiden
         availableSeats: ['A1', 'A2'],
         pricePerSeat: 150,
         roomNumber: 1,
